@@ -41,16 +41,19 @@ transform_pipeline = transforms.Compose([
 def load_model():
     model = efficientnet_b0(weights=None)
     
-    # Get the number of input features from the last linear layer
-    # We now access classifier[1] to get the input features
-    in_features = model.classifier[1].in_features
+    # --- The Fix for the Mismatched Keys ---
+    # First, load the state_dict
+    state_dict = torch.load('crop_disease_model.pth', map_location=torch.device('cpu'))
     
-    # Corrected: Replace the final layer with the correct number of outputs
-    # The error message indicates the final layer is at index 3 in the classifier's Sequential module.
-    model.classifier[1] = torch.nn.Linear(in_features, len(class_names))
-    
-    # Load the saved state_dict
-    model.load_state_dict(torch.load('crop_disease_model.pth', map_location=torch.device('cpu')))
+    # Then, manually fix the keys to match the model architecture
+    # The saved file has a key for a layer at index 3, but the model has it at index 1.
+    if "classifier.3.weight" in state_dict and "classifier.1.weight" not in state_dict:
+        state_dict["classifier.1.weight"] = state_dict.pop("classifier.3.weight")
+        state_dict["classifier.1.bias"] = state_dict.pop("classifier.3.bias")
+
+    # Now, load the corrected state_dict into the model
+    model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, len(class_names))
+    model.load_state_dict(state_dict)
     
     # Set the model to evaluation mode
     model.eval()
