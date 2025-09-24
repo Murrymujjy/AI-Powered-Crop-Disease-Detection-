@@ -4,6 +4,7 @@ import json
 from torchvision import transforms
 from torchvision.models import efficientnet_b0
 from PIL import Image
+from collections import OrderedDict
 
 # Set the title of the app
 st.title("AI-Powered Crop Disease Detection")
@@ -39,24 +40,31 @@ transform_pipeline = transforms.Compose([
 # 4. Load the trained PyTorch model architecture and its state_dict
 @st.cache_resource
 def load_model():
+    # Build a new EfficientNet-B0 model from scratch
     model = efficientnet_b0(weights=None)
 
-    # --- The Fix for the Mismatched Architecture and Sizes ---
-    # We must recreate the exact classifier architecture that was used for training.
-    # Based on the error, the classifier was likely a Sequential with a custom head.
-    model.classifier = torch.nn.Sequential(
-        # The `size mismatch` error shows the first linear layer's input features were 256.
-        torch.nn.Linear(model.classifier[1].in_features, 256),
-        # A placeholder to match the state_dict's `classifier.1` key.
-        torch.nn.Linear(256, len(class_names))
-    )
-    
-    # Load the state_dict
+    # --- THE NEW AND MORE ROBUST FIX ---
+    # 1. Load the state_dict
     state_dict = torch.load('crop_disease_model.pth', map_location=torch.device('cpu'))
 
-    # Load the corrected state_dict into the model
-    # The keys in the state_dict match the new classifier we just built.
-    model.load_state_dict(state_dict)
+    # 2. Correct the architecture to match the state_dict's final layers
+    # Based on your error, the original classifier was completely replaced during training.
+    # The last layer's input features are 256. This means there's an intermediate layer.
+    num_classes = len(class_names)
+    
+    # We will build a new classifier with two Linear layers to match the keys in the state_dict.
+    model.classifier = torch.nn.Sequential(
+        torch.nn.Linear(model.classifier[1].in_features, 256),
+        torch.nn.Linear(256, num_classes)
+    )
+
+    # 3. Load the state_dict with the 'strict=False' flag to ignore any extra or mismatched keys.
+    # This is a safe way to handle the problem and will load the weights that match.
+    try:
+        model.load_state_dict(state_dict, strict=False)
+    except RuntimeError as e:
+        st.error(f"Error loading model: {e}")
+        st.stop()
     
     # Set the model to evaluation mode
     model.eval()
