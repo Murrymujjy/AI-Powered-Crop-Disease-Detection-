@@ -40,19 +40,22 @@ transform_pipeline = transforms.Compose([
 @st.cache_resource
 def load_model():
     model = efficientnet_b0(weights=None)
-    
-    # --- The Fix for the Mismatched Keys ---
-    # First, load the state_dict
-    state_dict = torch.load('crop_disease_model.pth', map_location=torch.device('cpu'))
-    
-    # Then, manually fix the keys to match the model architecture
-    # The saved file has a key for a layer at index 3, but the model has it at index 1.
-    if "classifier.3.weight" in state_dict and "classifier.1.weight" not in state_dict:
-        state_dict["classifier.1.weight"] = state_dict.pop("classifier.3.weight")
-        state_dict["classifier.1.bias"] = state_dict.pop("classifier.3.bias")
 
-    # Now, load the corrected state_dict into the model
-    model.classifier[1] = torch.nn.Linear(model.classifier[1].in_features, len(class_names))
+    # --- The Fix for the Mismatched Architecture and Sizes ---
+    # We must recreate the exact classifier architecture that was used for training.
+    # Based on the error, the classifier was likely a Sequential with a custom head.
+    model.classifier = torch.nn.Sequential(
+        # The `size mismatch` error shows the first linear layer's input features were 256.
+        torch.nn.Linear(model.classifier[1].in_features, 256),
+        # A placeholder to match the state_dict's `classifier.1` key.
+        torch.nn.Linear(256, len(class_names))
+    )
+    
+    # Load the state_dict
+    state_dict = torch.load('crop_disease_model.pth', map_location=torch.device('cpu'))
+
+    # Load the corrected state_dict into the model
+    # The keys in the state_dict match the new classifier we just built.
     model.load_state_dict(state_dict)
     
     # Set the model to evaluation mode
