@@ -40,7 +40,13 @@ transform_pipeline = transforms.Compose([
 @st.cache_resource
 def load_model():
     model = efficientnet_b0(weights=None)
+    
+    # Get the number of input features from the last linear layer
+    # We now access classifier[1] to get the input features
     in_features = model.classifier[1].in_features
+    
+    # Corrected: Replace the final layer with the correct number of outputs
+    # The error message indicates the final layer is at index 3 in the classifier's Sequential module.
     model.classifier[1] = torch.nn.Linear(in_features, len(class_names))
     
     # Load the saved state_dict
