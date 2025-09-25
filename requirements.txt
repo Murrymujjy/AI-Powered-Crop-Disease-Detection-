@@ -4,3 +4,4 @@ torchvision
 Pillow
 tqdm 
 streamlit
+pandas
