@@ -1,12 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 
-# --- 1. Import all feature modules ---
-# These are the files we created: model.py, detector.py, chatbot.py, etc.
-# Note: Since the modules only define functions (e.g., show_detector_page),
-# we import them for clarity. You do not need to import 'model' here
-# as the feature modules already import what they need.
-
 import detector
 import weather
 import chatbot
@@ -79,16 +73,23 @@ with st.sidebar:
 # --- 5. Page Router (Calling the imported module functions) ---
 
 if st.session_state.selected_nav == "Home":
-    st.title("🌾 AI-Powered Agricultural Intelligence Platform")
+    # 1. Centered Title (using HTML for styling)
+    st.markdown("<h1 style='text-align: center;'>🌾 AI-Powered Agricultural Intelligence Platform</h1>", unsafe_allow_html=True)
+    
+    # 2. Centered Introductory Text
     st.markdown(
         """
-        <div style='font-size:15px'>
+        <div style='text-align: center; font-size:1.1rem; margin-bottom: 20px;'>
         Welcome to the **AI Agricultural Dashboard**, your intelligent tool for maximizing crop health and profitability.<br>
         Built with deep learning and real-time data, this platform supports **farmers** in making data-driven decisions.
         </div>
         <hr>
         """, unsafe_allow_html=True
     )
+    
+    # 3. Call-to-Action for Navigation
+    st.warning("👉 **Discover More:** Use the **Navigation Menu** in the sidebar to explore advanced features like the Disease Detector, Weather Forecast, and AgriBot Chat!")
+
 
     # Creating a Home Page grid with links/buttons to other features
     col1, col2, col3 = st.columns(3)
