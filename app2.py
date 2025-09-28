@@ -80,8 +80,8 @@ if st.session_state.selected_nav == "Home":
     st.markdown(
         """
         <div style='text-align: center; font-size:1.1rem; margin-bottom: 20px;'>
-        Welcome to the **AI Agricultural Dashboard**, your intelligent tool for maximizing crop health and profitability.<br>
-        Built with deep learning and real-time data, this platform supports **farmers** in making data-driven decisions.
+        Welcome to the *AI Agricultural Dashboard*, your intelligent tool for maximizing crop health and profitability.<br>
+        Built with deep learning and real-time data, this platform supports *farmers* in making data-driven decisions.
         </div>
         <hr>
         """, unsafe_allow_html=True
