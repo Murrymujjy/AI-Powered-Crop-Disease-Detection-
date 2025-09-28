@@ -110,11 +110,11 @@ elif page_selection == "Recommendations":
     show_recommendations_page()
 
 elif page_selection == "Market Prices":
-    # show_market_page() # Uncomment when ready
+    show_market_page() 
     st.title("📈 Crop Market Prices")
-    st.error("Feature requires data integration (uncomment 'show_market_page()' in app.py when ready).")
+    st.error("Feature requires data integration.")
 
 elif page_selection == "Soil Monitoring":
-    # show_soil_page() # Uncomment when ready
+    show_soil_page() 
     st.title("🔬 Soil Parameter Monitoring")
-    st.error("Feature requires IoT sensor API integration (uncomment 'show_soil_page()' in app.py when ready).")
+    st.error("Feature requires IoT sensor API integration.")
