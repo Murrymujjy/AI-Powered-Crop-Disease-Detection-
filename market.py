@@ -11,7 +11,7 @@ from datetime import datetime
 # an external financial API (e.g., ExchangeRate-API) here.
 EXCHANGE_RATES = {
     "USD - US Dollar": {"rate": 1.0, "symbol": "$"},
-    "NGN - Nigerian Naira": {"rate": 1500.00, "symbol": "₦"}, # Added based on user request (1 USD = 1500 NGN)
+    "NGN - Nigerian Naira": {"rate": 1500.00, "symbol": "₦"}, 
     "EUR - Euro": {"rate": 0.93, "symbol": "€"},
     "GBP - Pound Sterling": {"rate": 0.80, "symbol": "£"},
     "JPY - Japanese Yen": {"rate": 150.00, "symbol": "¥"},
@@ -19,10 +19,28 @@ EXCHANGE_RATES = {
 
 def show_market_page():
     """
-    Displays the market data and price simulation page, now with dynamic currency display.
+    Displays the market data, price simulation, and IoT metrics page.
     """
-    st.title("🌾 Agricultural Market Insights")
+    st.title("🌾 Agricultural Market Insights & Farm Monitoring")
     st.markdown("---")
+
+    # --- Real-Time Farm Metrics (IoT Placeholder) ---
+    st.subheader("Real-Time Farm Metrics")
+    st.info("The metrics below are placeholders. Integration with an IoT sensor platform API is required to display live farm data.")
+    
+    # Placeholder data for IoT metrics
+    # In a real app, you would fetch this data from an API endpoint
+    col_iot1, col_iot2, col_iot3 = st.columns(3)
+    
+    with col_iot1:
+        st.metric("Soil Moisture", "45%", "-5% (Dry)", help="Data from Placeholder Soil Sensor 1")
+    with col_iot2:
+        st.metric("Air Temperature", "28°C", "+1.2°C", help="Data from Placeholder Weather Station")
+    with col_iot3:
+        st.metric("Humidity", "65%", "0%", help="Data from Placeholder Weather Station")
+
+    st.markdown("---")
+
 
     # --- Currency Selection (Added) ---
     st.sidebar.header("Currency Settings")
@@ -41,7 +59,7 @@ def show_market_page():
 
     try:
         # Base data in USD (This is what you'd get from your API)
-        st.subheader(f"Current Market Prices ({selected_currency_key})")
+        st.subheader(f"Current Commodity Prices ({selected_currency_key})")
         
         # Base prices are stored in USD
         data_usd = {
