@@ -4,9 +4,9 @@ import streamlit as st
 from detector import show_detector_page
 from chatbot import show_agribot_page
 from recommendations import show_recommendations_page
-from weather import show_weather_page  # NEW FEATURE IMPORT
-# from market import show_market_page  # UNCOMMENT WHEN MARKET.PY IS READY
-# from soil import show_soil_page      # UNCOMMENT WHEN SOIL.PY IS READY
+from weather import show_weather_page  
+from market import show_market_page  
+from soil import show_soil_page      
 
 
 # --- Global App Configuration and Custom CSS for Professional Look ---
