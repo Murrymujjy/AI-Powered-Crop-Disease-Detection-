@@ -5,7 +5,7 @@ import pandas as pd
 
 # Placeholder for a real API Key and Base URL
 WEATHER_API_KEY = "fc969c761aea87ad724bd1cb27362628"  
-WEATHER_API_URL = "https://home.openweathermap.org/api_keys"
+WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather"
 
 def fetch_weather(city_name):
     """Fetches current weather data for a given city."""
